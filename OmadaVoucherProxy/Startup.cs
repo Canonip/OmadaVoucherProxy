@@ -8,12 +8,16 @@ namespace OmadaVoucherProxy
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
-            Settings.OmadaHost = configuration["AppSettings:OmadaHost"];
-            Settings.OmadaUser = configuration["AppSettings:OmadaUser"];
-            Settings.OmadaPassword = configuration["AppSettings:OmadaPassword"];
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(env.ContentRootPath)
+               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+               .AddEnvironmentVariables();
+            Configuration = builder.Build();
+            Settings.CloudOmadaUser = Configuration["CLOUD_USER"];
+            Settings.CloudOmadaPassword = Configuration["CLOUD_PASSWORD"];
+            Settings.CloudOmadaClientId = Configuration["CLOUD_CLIENT_ID"];
         }
 
         public IConfiguration Configuration { get; }
